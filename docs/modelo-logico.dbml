@@ -1,0 +1,23 @@
+Project products_atividade {
+  database_type: 'PostgreSQL'
+  Note: 'Adaptacao academica do ProductModel e do enum ProductType. Cada produto possui um tipo obrigatorio.'
+}
+
+Table product_type {
+  code varchar(20) [pk, note: 'Nome estavel do tipo, correspondente ao enum original']
+  label varchar(80) [not null]
+}
+
+Table product {
+  product_id uuid [pk, default: `gen_random_uuid()`]
+  name varchar(120) [not null]
+  description text
+  type_code varchar(20) [not null]
+  price numeric(12,2) [not null, note: 'CHECK price >= 0']
+
+  indexes {
+    type_code
+  }
+}
+
+Ref fk_product_type: product.type_code > product_type.code [delete: restrict, update: cascade]
